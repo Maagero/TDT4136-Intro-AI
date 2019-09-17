@@ -68,7 +68,7 @@ def astar(maze, start, end):
 
             isInOpen = False
             for open_node in open:
-                if child==open_node and child.g > open_node.g:
+                if child==open_node and child.g >= open_node.g:
                     isInOpen = True
             if isInOpen:
                 continue
