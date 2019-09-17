@@ -13,7 +13,7 @@ class Node:
     def __eq__(self, other):
         return self.position == other.position
 
-def astar(map, start, end):
+def astar(map, start, end, costMap):
     closed = []
     open = []
     print("Start")
@@ -64,7 +64,7 @@ def astar(map, start, end):
             if isClosed:
                 continue
 
-            child.g = curr_node.g + 1
+            child.g = curr_node.g + costMap[child.position[0]][child.position[1]]
             child.h = (abs(child.position[0] - end_node.position[0])) + (abs(child.position[1] - end_node.position[1]))
             child.f = child.g + child.h
 
@@ -81,24 +81,28 @@ def astar(map, start, end):
 
 def read_map():
     map = []
+    costMap = []
     with open("Samfundet_map_1.csv") as csv_file:
         csv_reader = csv.reader(csv_file,delimiter=",")
         for row in csv_reader:
             map.append(row)
         for i in range(len(map)):
+            costMapLine = []
             for j in range(len(map[0])):
                 # print(map[i][j])
-                if map[i][j]=="1":
-                    map[i][j]=0
+                costMapLine.append(int(map[i][j]))
                 if map[i][j]=="-1":
                     map[i][j]=1
-    return map
+                else:
+                    map[i][j]=0
+            costMap.append(costMapLine)
+    return map, costMap
 
 def main():
-    map = read_map()
+    map, costMap = read_map()
     start = (27, 19)
     end = (40, 32)
-    path = astar(map, start, end)
+    path = astar(map, start, end, costMap)
     mapper = Map.Map_Obj(task=1)
     for i in path:
         mapper.replace_map_values(list(i),3,[40,32])
