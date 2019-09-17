@@ -1,5 +1,7 @@
 import math
 import csv
+from PIL import Image
+import Map
 
 class Node:
     def __init__(self, parent=None, position=None):
@@ -12,7 +14,6 @@ class Node:
         return self.position == other.position
 
 def astar(map, start, end):
-
     closed = []
     open = []
     print("Start")
@@ -33,7 +34,7 @@ def astar(map, start, end):
 
         open.pop(curr_index)
         closed.append(curr_node)
-        print(curr_node.position)
+        # print(curr_node.position)
 
         if curr_node==end_node:
             path = []
@@ -86,23 +87,22 @@ def read_map():
             map.append(row)
         for i in range(len(map)):
             for j in range(len(map[0])):
-                print(map[i][j])
+                # print(map[i][j])
                 if map[i][j]=="1":
                     map[i][j]=0
                 if map[i][j]=="-1":
                     map[i][j]=1
     return map
 
-
 def main():
     map = read_map()
-    print(map)
-    start = (28, 18)
+    start = (27, 19)
     end = (40, 32)
-
     path = astar(map, start, end)
-    print(path)
-
+    mapper = Map.Map_Obj(task=1)
+    for i in path:
+        mapper.replace_map_values(list(i),3,[40,32])
+    mapper.show_map()
 
 if __name__ == '__main__':
     main()
