@@ -79,10 +79,10 @@ def astar(map, start, end, costMap):
             open.append(child)
 
 
-def read_map():
+def read_map(map_file):
     map = []
     costMap = []
-    with open("Samfundet_map_1.csv") as csv_file:
+    with open(map_file) as csv_file:
         csv_reader = csv.reader(csv_file,delimiter=",")
         for row in csv_reader:
             map.append(row)
@@ -99,13 +99,14 @@ def read_map():
     return map, costMap
 
 def main():
-    map, costMap = read_map()
-    start = (27, 19)
-    end = (40, 32)
-    path = astar(map, start, end, costMap)
-    mapper = Map.Map_Obj(task=1)
+    task = 2
+    mapper = Map.Map_Obj(task=task)
+    start, end, end_goal_pos, path_to_map = mapper.fill_critical_positions(task)
+    map, costMap = read_map(path_to_map)
+    path = astar(map, tuple(start), tuple(end),costMap)
+
     for i in path:
-        mapper.replace_map_values(list(i),3,[40,32])
+        mapper.replace_map_values(i,7,end_goal_pos)
     mapper.show_map()
 
 if __name__ == '__main__':
