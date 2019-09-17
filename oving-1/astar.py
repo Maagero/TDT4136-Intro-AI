@@ -1,4 +1,5 @@
 import math
+import csv
 
 class Node:
     def __init__(self, parent=None, position=None):
@@ -10,7 +11,7 @@ class Node:
     def __eq__(self, other):
         return self.position == other.position
 
-def astar(maze, start, end):
+def astar(map, start, end):
 
     closed = []
     open = []
@@ -46,9 +47,9 @@ def astar(maze, start, end):
         children = []
         for new_pos in [(0, -1), (0, 1), (-1, 0), (1, 0)]:
             node_pos = (curr_node.position[0] + new_pos[0], curr_node.position[1] + new_pos[1])
-            if node_pos[0] >(len(maze)-1) or node_pos[0]<0 or node_pos[1] > (len(maze[len(maze)-1]) -1) or node_pos[1] < 0:
+            if node_pos[0] >(len(map)-1) or node_pos[0]<0 or node_pos[1] > (len(map[len(map)-1]) -1) or node_pos[1] < 0:
                 continue
-            if maze[node_pos[0]][node_pos[1]] != 0:
+            if map[node_pos[0]][node_pos[1]] != 0:
                 continue
 
             new_node = Node(curr_node,node_pos)
@@ -77,27 +78,29 @@ def astar(maze, start, end):
             open.append(child)
 
 
-
-
+def read_map():
+    map = []
+    with open("Samfundet_map_1.csv") as csv_file:
+        csv_reader = csv.reader(csv_file,delimiter=",")
+        for row in csv_reader:
+            map.append(row)
+        for i in range(len(map)):
+            for j in range(len(map[0])):
+                print(map[i][j])
+                if map[i][j]=="1":
+                    map[i][j]=0
+                if map[i][j]=="-1":
+                    map[i][j]=1
+    return map
 
 
 def main():
+    map = read_map()
+    print(map)
+    start = (28, 18)
+    end = (40, 32)
 
-    maze = [[0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
-
-    start = (0, 0)
-    end = (0, 9)
-
-    path = astar(maze, start, end)
+    path = astar(map, start, end)
     print(path)
 
 
