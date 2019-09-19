@@ -3,7 +3,7 @@ import csv
 from PIL import Image
 import Map
 
-#The node with posision, g, h, f and a parent (for finding the shortes path)
+#The node with posision, g, h, f and a parent (for finding the shortest path)
 class Node:
     def __init__(self, parent=None, position=None):
         self.parent = parent
@@ -11,7 +11,7 @@ class Node:
         self.g = 0
         self.h = 0
         self.f = 0
-    #When comparing nodes, only compare the possision, so the g, h and f can be different
+    #When comparing nodes, only compare the position, so the g, h and f can be different
     def __eq__(self, other):
         return self.position == other.position
 
@@ -30,7 +30,7 @@ def astar(map, start, end):
         curr_node = open[0]
         curr_index = 0
 
-        #Choose the most promising node in open
+        #Choose the most promising node in open list
         for index, node in enumerate(open):
             if node.f < curr_node.f:
                 curr_node = node
@@ -105,15 +105,18 @@ def read_map(map_file):
     return map
 
 def main():
-    #set task to any task in map.py to test different tasks
+    # set task to any task in map.py to test different tasks
+    # PARAMETER task: Choose which task to test
     task = 4
     mapper = Map.Map_Obj(task=task)
     start, end, end_goal_pos, path_to_map = mapper.fill_critical_positions(task)
     map = read_map(path_to_map)
+    # Set path using the astar algorithm
     path = astar(map, tuple(start), tuple(end))
-
+    # Replace each point on the path
     for i in path:
         mapper.replace_map_values(i,7,end_goal_pos)
+    # Show map
     mapper.show_map()
 
 if __name__ == '__main__':
