@@ -4,7 +4,7 @@
 # educational purposes provided that (1) you do not distribute or publish
 # solutions, (2) you retain this notice, and (3) you provide clear
 # attribution to UC Berkeley, including a link to http://ai.berkeley.edu.
-# 
+#
 # Attribution Information: The Pacman AI projects were developed at UC Berkeley.
 # The core projects and autograders were primarily created by John DeNero
 # (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
@@ -111,25 +111,42 @@ class MinimaxAgent(MultiAgentSearchAgent):
       Your minimax agent (question 2)
     """
 
+    def minimax(self, gameState, depth, maximizingPlayer):
+            if depth==0 or gameState.isWin() or gameState.isLose():
+                    return self.evaluationFunction(gameState)
+            if maximizingPlayer==0:
+                    maxEval = -float('inf')
+                    children = gameState.getLegalActions(0)
+                    for child in children:
+                            eval = self.minimax(gameState.generateSuccessor(0,child), depth, 1)
+                            maxEval = max(eval, maxEval)
+                    return maxEval
+            elif maximizingPlayer<gameState.getNumAgents()-1:
+                    minEval = float('inf')
+                    children = gameState.getLegalActions(maximizingPlayer)
+                    for child in children:
+                            eval = self.minimax(gameState.generateSuccessor(maximizingPlayer,child), depth, maximizingPlayer+1)
+                            minEval = min(eval, minEval)
+                    return minEval
+            else:
+                    minEval = float('inf')
+                    children = gameState.getLegalActions(maximizingPlayer)
+                    for child in children:
+                            eval = self.minimax(gameState.generateSuccessor(maximizingPlayer,child), depth-1, 0)
+                            minEval = min(eval, minEval)
+                    return minEval
+
+
     def getAction(self, gameState):
-        """
-          Returns the minimax action from the current gameState using self.depth
-          and self.evaluationFunction.
+            children = gameState.getLegalActions(0)
+            scores = []
+            for child in children:
+                    scores.append(self.minimax(gameState.generateSuccessor(0,child), self.depth, 1))
+            bestScore = max(scores)
+            bestIndices = [index for index in range(len(scores)) if scores[index] == bestScore]
+            chosenIndex = random.choice(bestIndices) # Pick randomly among the best
+            return children[chosenIndex]
 
-          Here are some method calls that might be useful when implementing minimax.
-
-          gameState.getLegalActions(agentIndex):
-            Returns a list of legal actions for an agent
-            agentIndex=0 means Pacman, ghosts are >= 1
-
-          gameState.generateSuccessor(agentIndex, action):
-            Returns the successor game state after an agent takes an action
-
-          gameState.getNumAgents():
-            Returns the total number of agents in the game
-        """
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
     """
@@ -170,4 +187,3 @@ def betterEvaluationFunction(currentGameState):
 
 # Abbreviation
 better = betterEvaluationFunction
-
