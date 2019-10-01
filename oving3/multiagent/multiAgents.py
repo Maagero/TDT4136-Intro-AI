@@ -149,16 +149,56 @@ class MinimaxAgent(MultiAgentSearchAgent):
 
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
-    """
-      Your minimax agent with alpha-beta pruning (question 3)
-    """
+    def minimax(self, gameState, depth, maximizingPlayer, alpha, beta):
+            if depth==0 or gameState.isWin() or gameState.isLose():
+                    return self.evaluationFunction(gameState)
+            if maximizingPlayer==0:
+                    maxEval = -float('inf')
+                    children = gameState.getLegalActions(0)
+                    for child in children:
+                            eval = self.minimax(gameState.generateSuccessor(0,child), depth, 1, alpha, beta)
+                            maxEval = max(eval, maxEval)
+                            alpha = max(alpha,maxEval)
+                            if beta < alpha:
+                                    break
+                    return maxEval
+            elif maximizingPlayer<gameState.getNumAgents()-1:
+                    minEval = float('inf')
+                    children = gameState.getLegalActions(maximizingPlayer)
+                    for child in children:
+                            eval = self.minimax(gameState.generateSuccessor(maximizingPlayer,child), depth, maximizingPlayer+1, alpha, beta)
+                            minEval = min(eval, minEval)
+                            beta = min(beta,minEval)
+                            if beta < alpha:
+                                    break
+                    return minEval
+            else:
+                    minEval = float('inf')
+                    children = gameState.getLegalActions(maximizingPlayer)
+                    for child in children:
+                            eval = self.minimax(gameState.generateSuccessor(maximizingPlayer,child), depth-1, 0, alpha, beta)
+                            minEval = min(eval, minEval)
+                            beta = min(beta,minEval)
+                            if beta < alpha:
+                                    break
+                    return minEval
+
 
     def getAction(self, gameState):
-        """
-          Returns the minimax action using self.depth and self.evaluationFunction
-        """
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+            alpha = -float('inf')
+            beta = float('inf')
+            children = gameState.getLegalActions(0)
+            scores = []
+            for child in children:
+                    eval = self.minimax(gameState.generateSuccessor(0,child), self.depth, 1, alpha, beta)
+                    alpha = max(alpha,eval)
+                    if beta < alpha:
+                            break
+                    scores.append(eval)
+            bestScore = max(scores)
+            bestIndices = [index for index in range(len(scores)) if scores[index] == bestScore]
+            chosenIndex = random.choice(bestIndices) # Pick randomly among the best
+            return children[chosenIndex]
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
     """
