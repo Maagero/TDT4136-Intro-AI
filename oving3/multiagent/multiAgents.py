@@ -110,17 +110,22 @@ class MinimaxAgent(MultiAgentSearchAgent):
     """
       Your minimax agent (question 2)
     """
-
+    # Function for the algorithm
     def minimax(self, gameState, depth, maximizingPlayer):
+            # When the algorithm should stop
             if depth==0 or gameState.isWin() or gameState.isLose():
                     return self.evaluationFunction(gameState)
+            # If pacman
             if maximizingPlayer==0:
+                    # Negative infinity
                     maxEval = -float('inf')
+                    # Get all possible actions
                     children = gameState.getLegalActions(0)
                     for child in children:
                             eval = self.minimax(gameState.generateSuccessor(0,child), depth, 1)
                             maxEval = max(eval, maxEval)
                     return maxEval
+            # Else if ghosts
             elif maximizingPlayer<gameState.getNumAgents()-1:
                     minEval = float('inf')
                     children = gameState.getLegalActions(maximizingPlayer)
@@ -128,6 +133,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
                             eval = self.minimax(gameState.generateSuccessor(maximizingPlayer,child), depth, maximizingPlayer+1)
                             minEval = min(eval, minEval)
                     return minEval
+            # The last ghost should reduce depth by 1, this way we are looping through each "player"
             else:
                     minEval = float('inf')
                     children = gameState.getLegalActions(maximizingPlayer)
@@ -138,8 +144,10 @@ class MinimaxAgent(MultiAgentSearchAgent):
 
 
     def getAction(self, gameState):
+            # Function for finding actions
             children = gameState.getLegalActions(0)
             scores = []
+            # Add the scores to a list, and choose the best move
             for child in children:
                     scores.append(self.minimax(gameState.generateSuccessor(0,child), self.depth, 1))
             bestScore = max(scores)
@@ -150,6 +158,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
     def minimax(self, gameState, depth, maximizingPlayer, alpha, beta):
+            # Almost same, but now with pruning depending on alpha and beta
             if depth==0 or gameState.isWin() or gameState.isLose():
                     return self.evaluationFunction(gameState)
             if maximizingPlayer==0:
@@ -159,6 +168,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
                             eval = self.minimax(gameState.generateSuccessor(0,child), depth, 1, alpha, beta)
                             maxEval = max(eval, maxEval)
                             alpha = max(alpha,maxEval)
+                            # If we find that beta is less than alpha we dont need anything more
                             if beta < alpha:
                                     break
                     return maxEval
@@ -173,6 +183,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
                                     break
                     return minEval
             else:
+                    # Same here except subtracting 1 in depth
                     minEval = float('inf')
                     children = gameState.getLegalActions(maximizingPlayer)
                     for child in children:
@@ -189,6 +200,7 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
             beta = float('inf')
             children = gameState.getLegalActions(0)
             scores = []
+            # We have to also check if beta is less than alpha here as well.
             for child in children:
                     eval = self.minimax(gameState.generateSuccessor(0,child), self.depth, 1, alpha, beta)
                     alpha = max(alpha,eval)
