@@ -109,13 +109,19 @@ class CSP:
         iterations of the loop.
         """
         # TODO: IMPLEMENT THIS
-        if len(assignment)==len(self.variables):
+        if isComplete(assignment):
                 return assignment
         var = select_unassigned_variable(assignment)
         for value in self.domains[var]:
-                
+                copy_assignment = copy(assignment)
+                if value
 
-        pass
+   def isComplete(assignment):
+           for key in assignment:
+                   if len(assignment[key])>1:
+                           return False
+           return True
+
 
     def select_unassigned_variable(self, assignment):
         """The function 'Select-Unassigned-Variable' from the pseudocode
@@ -124,9 +130,9 @@ class CSP:
         of legal values has a length greater than one.
         """
         # TODO: IMPLEMENT THIS
-        for var in self.variables:
-                if var not in assignment:
-                        return var
+        for key in assignment:
+                if len(assignment[key])>1:
+                        return key
         pass
 
     def inference(self, assignment, queue):
