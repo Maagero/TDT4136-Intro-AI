@@ -142,7 +142,18 @@ class CSP:
         is the initial queue of arcs that should be visited.
         """
         # TODO: IMPLEMENT THIS
-        pass
+
+        # While in the queue
+        while queue:
+            arc = queue.pop()
+            if self.revise(assignment, *arc):
+                if not assignment[arc[0]]:
+                    return False
+
+                for i in get_all_neighboring_arcs(arc[0]):
+                    if i[0] not in arc:
+                        queue.append(i[0], arc[0])
+        return True
 
     def revise(self, assignment, i, j):
         """The function 'Revise' from the pseudocode in the textbook.
