@@ -14,6 +14,8 @@ class CSP:
         # the variable pair (i, j)
         self.constraints = {}
 
+        self.backtrack_results = {'success': 0, 'failure': 0}
+
     def add_variable(self, name, domain):
         """Add a new variable to the CSP. 'name' is the variable name
         and 'domain' is a list of the legal values for the variable.
@@ -109,9 +111,11 @@ class CSP:
         iterations of the loop.
         """
         # TODO: IMPLEMENT THIS
-        if isComplete(assignment):
+        self.backtrack_results['success'] += 1
+
+        if self.isComplete(assignment):
                 return assignment
-        var = select_unassigned_variable(assignment)
+        var = self.select_unassigned_variable(assignment)
         for value in assignment[var]:
                 copy_assignment = copy.deepcopy(assignment)
                 copy_assignment[var] = [value]
@@ -120,13 +124,14 @@ class CSP:
                         suc = self.backtrack(copy_assignment)
                         if suc:
                                 return suc
+        self.backtrack_results['failure'] += 1
         return False
 
-    def isComplete(assignment):
-           for key in assignment:
-                   if len(assignment[key])>1:
-                           return False
-           return True
+    def isComplete(self, assignment):
+        for key in assignment:
+            if len(assignment[key])>1:
+                return False
+        return True
 
 
     def select_unassigned_variable(self, assignment):
@@ -156,9 +161,9 @@ class CSP:
                 if not assignment[arc[0]]:
                     return False
 
-                for i in get_all_neighboring_arcs(arc[0]):
+                for i in self.get_all_neighboring_arcs(arc[0]):
                     if i[0] not in arc:
-                        queue.append(i[0], arc[0])
+                        queue.append([i[0], arc[0]])
         return True
 
     def revise(self, assignment, i, j):
@@ -253,3 +258,11 @@ def print_sudoku_solution(solution):
         print("")
         if row == 2 or row == 5:
             print('------+-------+------')
+
+if __name__ == "__main__":
+    boards = ['easy.txt', 'medium.txt', 'hard.txt', 'veryhard.txt']
+    inp = input('Select board with index 0-3: ')
+    csp = create_sudoku_csp(boards[int(inp)])
+    print_sudoku_solution(csp.backtracking_search())
+    print('Total backtracks: ' + str(csp.backtrack_results['success']+csp.backtrack_results['failure']))
+    print('Failed backtracks: ' + str(csp.backtrack_results['failure']))
