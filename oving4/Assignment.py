@@ -112,12 +112,17 @@ class CSP:
         if isComplete(assignment):
                 return assignment
         var = select_unassigned_variable(assignment)
-        for value in self.domains[var]:
+        for value in assignment[var]:
                 copy_assignment = copy.deepcopy(assignment)
+                copy_assignment[var] = [value]
 
-                if value
+                if self.inference(copy_assignment, self.get_all_arcs()):
+                        suc = self.backtrack(copy_assignment)
+                        if suc:
+                                return suc
+        return False
 
-   def isComplete(assignment):
+    def isComplete(assignment):
            for key in assignment:
                    if len(assignment[key])>1:
                            return False
