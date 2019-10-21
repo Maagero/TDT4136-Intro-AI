@@ -227,5 +227,4 @@ class Map_Obj():
                     for j in range(scale):
                         pixels[x * scale + i, y * scale + j] = colors[map[y][x]]
         # Show image
-        image.show()
-
+        image.save('bestPath.jpg')

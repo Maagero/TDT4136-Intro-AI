@@ -107,7 +107,7 @@ def read_map(map_file):
 def main():
     # set task to any task in map.py to test different tasks
     # PARAMETER task: Choose which task to test
-    task = 4
+    task = 2
     mapper = Map.Map_Obj(task=task)
     start, end, end_goal_pos, path_to_map = mapper.fill_critical_positions(task)
     map = read_map(path_to_map)

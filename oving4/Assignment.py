@@ -113,7 +113,8 @@ class CSP:
                 return assignment
         var = select_unassigned_variable(assignment)
         for value in self.domains[var]:
-                copy_assignment = copy(assignment)
+                copy_assignment = copy.deepcopy(assignment)
+
                 if value
 
    def isComplete(assignment):
@@ -165,7 +166,19 @@ class CSP:
         legal values in 'assignment'.
         """
         # TODO: IMPLEMENT THIS
-        pass
+        cons = list(self.constraints[i][j])
+        revised = False
+
+        for x in assignment[i]:
+                remove = True
+                for y in assignment[j]:
+                        if (x,y) in cons:
+                                remove = False
+                if remove:
+                        assignment[i].remove(x)
+                        revised = True
+        return revised
+
 
 
 def create_map_coloring_csp():
